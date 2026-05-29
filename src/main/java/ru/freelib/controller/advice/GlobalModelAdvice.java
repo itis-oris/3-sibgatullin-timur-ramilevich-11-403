@@ -14,9 +14,23 @@ import ru.freelib.service.UserAccountService;
 @RequiredArgsConstructor
 public class GlobalModelAdvice {
 
+    private final UserAccountService userAccountService;
+
     @ModelAttribute("currentContext")
     public String currentContext(HttpServletRequest request) {
         return request.getContextPath();
+    }
+
+    @ModelAttribute("user")
+    public Object currentUser(@AuthenticationPrincipal CustomUserDetails details) {
+        if (details == null) return null;
+
+        try {
+            userAccountService.getById(details.getId());
+            return new UserView(details);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Getter
