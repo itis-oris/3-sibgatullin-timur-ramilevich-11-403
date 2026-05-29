@@ -1,0 +1,97 @@
+# 1. Аутентификация
+
+### 1.1. Регистрация нового пользователя
+POST {{baseUrl}}/auth/register
+Content-Type: application/x-www-form-urlencoded
+Cookie: XSRF-TOKEN={{xsrfToken}}
+X-XSRF-TOKEN: {{xsrfToken}}
+
+login=testuser1&password=TestTest12345678&passwordConfirm=TestTest12345678&role=author&nickname=TestAuthor1&description=Testetes
+
+### 1.2. Логин администратора
+POST {{baseUrl}}/auth/login
+Content-Type: application/x-www-form-urlencoded
+Cookie: XSRF-TOKEN={{xsrfToken}}
+X-XSRF-TOKEN: {{xsrfToken}}
+
+login=testuser1&password=TestTest12345678
+
+
+# 2. Публичные страницы (веб)
+
+### 2.1. Главная страница
+GET {{baseUrl}}/home
+Accept: text/html
+
+### 2.2. Просмотр книги
+GET {{baseUrl}}/book?id={{bookId}}
+Accept: text/html
+
+### 2.3. Книги по жанру
+GET {{baseUrl}}/books?genreId={{genreId}}
+Accept: text/html
+
+
+
+# 3. REST API: Книги (основная сущность)
+
+### 3.1. Получить книги с пагинацией (CriteriaBuilder)
+GET {{baseUrl}}/api/v1/books?page=0&size=10&sort=createdAt,desc
+Cookie: ACCESS_TOKEN={{accessToken}}
+
+### 3.2. Комбинированный поиск (title + author + genre)
+GET {{baseUrl}}/api/v1/books?title=мастер&authorName=булгаков&genreIds={{genreId}}&page=0&size=10
+Cookie: ACCESS_TOKEN={{accessToken}}
+
+### 3.3. Фильтрация по просмотрам
+GET {{baseUrl}}/api/v1/books?minViews=10&maxViews=100&page=0&size=10
+Cookie: ACCESS_TOKEN={{accessToken}}
+
+
+# 4. REST API: AI и Избранное
+
+### 4.1. Генерация описания
+POST {{baseUrl}}/api/v1/ai/generate-description
+Content-Type: application/json
+Cookie: ACCESS_TOKEN={{accessToken}}
+X-XSRF-TOKEN: {{xsrfToken}}
+
+{
+  "title": "Мастер и Маргарита",
+  "author": "Михаил Булгаков",
+  "genres": ["Роман", "Мистика"]
+}
+
+### 4.2. Добавить в избранное
+POST {{baseUrl}}/api/v1/favorites/{{bookId}}
+Cookie: ACCESS_TOKEN={{accessToken}}
+X-XSRF-TOKEN: {{xsrfToken}}
+
+### 4.3. Удалить из избранного
+DELETE {{baseUrl}}/api/v1/favorites/{{bookId}}
+Cookie: ACCESS_TOKEN={{accessToken}}
+X-XSRF-TOKEN: {{xsrfToken}}
+
+
+# 5. Обработка ошибок
+
+### 5.1. Пустой результат
+GET {{baseUrl}}/api/v1/books?title=несуществующая_книга_12345
+Cookie: ACCESS_TOKEN={{accessToken}}
+
+### 5.2. Некорректный параметр
+GET {{baseUrl}}/api/v1/books?minViews=abc
+Cookie: ACCESS_TOKEN={{accessToken}}
+
+### 5.3. Доступ без авторизации
+POST {{baseUrl}}/api/v1/favorites/{{bookId}}
+
+
+# 6. Swagger / OpenAPI
+
+### 6.1. Swagger UI
+GET {{baseUrl}}/swagger-ui/index.html
+
+### 6.2. OpenAPI JSON-схема
+GET {{baseUrl}}/v3/api-docs
+Accept: application/json

@@ -1,0 +1,79 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  error:
+    whitelabel:
+      enabled: false
+    include-stacktrace: never
+    include-message: never
+
+spring:
+  application:
+    name: freelib
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:freelib}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  freemarker:
+    suffix: .ftlh
+    template-loader-path: classpath:/templates/
+    settings:
+      datetime_format: dd.MM.yyyy HH:mm
+      date_format: dd.MM.yyyy
+      time_format: HH:mm
+      template_exception_handler: rethrow
+      url_escaping_charset: UTF-8
+    expose-session-attributes: false
+  cache:
+    type: redis
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  mvc:
+    static-path-pattern: /static/**
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 100MB
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-me-in-production-min-32-chars-long!!}
+    access-ttl: ${JWT_ACCESS_TTL:3600000}
+    refresh-ttl: ${JWT_REFRESH_TTL:604800000}
+  ai:
+    gen-url: ${AI_GEN_URL:http://localhost:11434/v1}
+    model-gen: ${AI_GEN_MODEL:qwen3.5:4B}
+    embed-url: ${AI_EMBED_URL:http://localhost:11435/v1}
+    model-embed: ${AI_EMBED_MODEL:qwen3-embedding:0.6B}
+    timeout-sec: ${AI_TIMEOUT_SEC:30}
+  minio:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    access-key: ${MINIO_ACCESS_KEY:freelib_admin}
+    secret-key: ${MINIO_SECRET_KEY:freelib_secret}
+    bucket-name: ${MINIO_BUCKET:books}
+  app:
+    admin:
+      login: ${ADMIN_LOGIN:admin}
+      password: ${ADMIN_PASSWORD:changeme}
+      nickname: ${ADMIN_NICKNAME:admin}
+
+logging:
+  file:
+    name: logs/freelib.log
