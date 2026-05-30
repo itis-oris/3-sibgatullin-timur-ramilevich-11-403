@@ -28,7 +28,7 @@
           onsubmit="return confirm('Вы уверены, что хотите удалить аккаунт?');">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
         <input type="hidden" name="idempotencyToken" value="${idempotencyToken}">
-        <button type="submit" class="btn-danger" onclick="return confirm('Вы хотите удалить аккаунт?');">
+        <button type="submit" class="btn-danger">
             Удалить аккаунт
         </button>
     </form>
